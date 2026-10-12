@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5f0">
+  <title>ことばの種 | SNS投稿編集室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ことばの種 ホーム"><span class="brand-mark">種</span><span>ことばの種 <small>CONTENT STUDIO</small></span></a>
+    <span class="local-badge"><i></i> 分析はブラウザ内</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <div class="eyebrow"><span>01</span> ARTICLE TO SOCIAL</div>
+      <h1>記事から、<em>伝わる投稿</em>の<br class="desktop">種を見つけよう。</h1>
+      <p>記事の内容を整理して、X・Threads向けの投稿アイデアをつくります。</p>
+      <div class="steps"><span class="step-active">記事を入力</span><b></b><span>アイデアを分析</span><b></b><span>投稿を選ぶ</span></div>
+    </section>
+
+    <section class="editor card" aria-labelledby="editor-title">
+      <div class="section-heading"><div><span class="kicker">YOUR SOURCE</span><h2 id="editor-title">記事を入力</h2></div><span class="step-number">01 <span>/ 02</span></span></div>
+      <label for="article-title">記事タイトル <span>必須</span></label>
+      <input id="article-title" type="text" maxlength="120" placeholder="例：朝の習慣を変えたら、仕事が少し楽になった話">
+      <div class="label-line"><label for="article-body">記事本文 <span>必須</span></label><small id="char-count">0 文字</small></div>
+      <textarea id="article-body" rows="8" placeholder="記事の本文を貼り付けてください。内容からターゲットや投稿の切り口、投稿案を提案します。"></textarea>
+      <div class="form-foot"><span>分析はブラウザ内で行います。保存時は選択した投稿内容がApps Scriptへ送信されます。</span><button id="analyze-btn" class="primary" type="button"><span>分析する</span><span aria-hidden="true">→</span></button></div>
+      <p id="form-error" class="error" role="alert" hidden></p>
+    </section>
+
+    <section id="results" class="results" aria-live="polite" hidden>
+      <div class="results-head"><div><div class="eyebrow"><span>02</span> YOUR CONTENT IDEAS</div><h2>投稿の種が見つかりました。</h2><p>記事のキーワードから組み立てた投稿案です。自由に編集してお使いください。</p></div><button class="text-button" id="edit-btn" type="button">↑ 記事を編集</button></div>
+      <p class="analysis-note">キーワードと文章の特徴から行うローカルの簡易分析です。素材や評価は編集のたたき台としてご確認ください。</p>
+      <div class="insights">
+        <article class="insight-card"><div class="insight-icon">◎</div><div><span class="kicker">TARGET AUDIENCE</span><h3>届きそうなターゲット候補</h3><div id="target-list" class="chips"></div></div></article>
+        <article class="insight-card"><div class="insight-icon">✳</div><div><span class="kicker">ANGLE</span><h3>投稿の切り口</h3><div id="angle-list" class="chips"></div></div></article>
+      </div>
+      <section class="materials-section" aria-labelledby="materials-title"><div class="subsection-heading"><div><span class="kicker">SOURCE MATERIALS</span><h3 id="materials-title">記事から見つけた素材</h3></div></div><div id="material-list" class="material-list"></div></section>
+      <div class="ideas-heading"><div><span class="kicker">POST IDEAS</span><h3>投稿候補 <span id="idea-count" class="count"></span></h3></div><div class="platform-switch" role="group" aria-label="SNSの種類"><button class="platform active" data-platform="x" type="button">𝕏 <span>X</span></button><button class="platform" data-platform="threads" type="button"><span class="threads-mark">@</span> Threads</button></div></div>
+      <section class="sheets-panel" aria-labelledby="sheets-title">
+        <details id="sheets-settings"><summary id="sheets-title">Googleスプレッドシート接続設定</summary>
+          <label for="gas-url">Apps Script WebアプリURL</label><input id="gas-url" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+          <label for="gas-secret">認証用シークレット <span>任意</span></label><input id="gas-secret" type="password" autocomplete="off" placeholder="Apps Script側で設定したシークレット">
+          <p>URLとシークレットはこのブラウザのlocalStorageに保存されます。公開ページで共有シークレットを使う場合、利用者が確認できるため秘密情報として配布しないでください。</p>
+        </details>
+        <div class="selection-toolbar"><label class="select-all"><input id="select-all" type="checkbox"> 全選択</label><button id="clear-selection" class="text-button" type="button">選択解除</button><span id="selection-count" aria-live="polite">0件選択中</span><button id="save-sheets" class="primary" type="button">Googleスプレッドシートへ保存</button></div>
+        <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+      </section>
+      <div id="idea-list" class="idea-list"></div>
+      <details class="setup-help"><summary>Google Apps Script 接続手順</summary><ol><li>Googleスプレッドシートを作成し、「拡張機能」→「Apps Script」を開きます。</li><li>プロジェクト内の <code>google-apps-script/Code.gs</code> を貼り付け、スクリプトプロパティ <code>SPREADSHEET_ID</code> にシートIDを設定します。</li><li>公開運用では <code>SHARED_SECRET</code> を未設定にしないでください。ただし、ブラウザに入力して利用者へ共有したシークレットは利用者から確認できます。</li><li>「デプロイ」→「新しいデプロイ」→「ウェブアプリ」で実行ユーザーを自分、アクセスできるユーザーを用途に合わせて設定してデプロイします。</li><li>発行されたURLと同じシークレットを上の設定欄に入力し、投稿候補を選んで保存します。</li></ol><p>この送信方式ではブラウザから完了レスポンスを読めない場合があります。スプレッドシートに行が追加されたことを確認してください。公開ページは誰でも利用でき、入力内容は利用者のブラウザで分析されます。保存時には選択した投稿データがApps Scriptへ送信されます。共有シークレットだけで公開利用者からの書き込みを安全に制限することはできません。</p></details>
+      <p class="disclaimer">順位は具体性・記事との結びつき・独自性・読者への価値などをもとにした簡易評価です。内容を確認して編集してください。</p>
+    </section>
+    <footer>ことばの種 <span>·</span> 記事を、次の会話へ。</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
